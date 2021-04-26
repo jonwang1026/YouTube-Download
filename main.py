@@ -10,24 +10,27 @@ def audioOnly(fileName, path, url):
     except:
         print("double check the video URL")
 
-def lowVidQuality(url):
+def lowVidQuality(fileName, path, url):
     yt = YouTube(url)
-    print(yt.streams.get_by_resolution().download(path, fileName) + " downloaded")
+    print(yt.streams.get_highest_resolution().download(path, fileName) + " downloaded")
+
 def mp4(fileName, path, url):
     try:
         yt = YouTube(url)
         video_input = yt.streams.filter(adaptive = True, only_video= True, mime_type= "video/mp4")
-        if video_input
-        audio_input = yt.streams.get_audio_only()
-        video_input.first().download(path,fileName)
-        print('finished video download')
-        audio_input.download(path,fileName)
-        print('finished audio download')
+        if video_input is None or not video_input:
+            lowVidQuality(fileName, path, url)
+        else:
+            audio_input = yt.streams.get_audio_only()
+            audio_file_name = yt.title+"_audio"
+            video_file_name = yt.title+ "_video"
+            video_input.first().download(path, video_file_name)
+            audio_input.download(path, audio_file_name)
     except:
         print("double check the video URL")
 
-    """directory = os.fsencode(path)
-    for file in os.listdir(directory):
+    directory = os.fsencode(path)
+    os.listdir(directory)[0]
         filename = os.fsdecode(file)
         if filename.endswith(".mp4"):
             audio_path = ffmpeg.input(os.path.abspath(filename))
@@ -35,7 +38,7 @@ def mp4(fileName, path, url):
             video_path = ffmpeg.input(os.path.abspath(filename))
     convertedPath = path +"/Converted"
     Path(convertedPath).mkdir(parents=True, exist_ok=True)
-    ffmpeg.concat(video_path, audio_path, v=1, a=1).output(convertedPath + "/converted_video.mp4").run()"""
+    ffmpeg.concat(video_path, audio_path, v=1, a=1).output(convertedPath + "/converted_video.mp4").run()
 
 url = 'https://www.youtube.com/watch?v=uo9JD9aPO8E'
 #url = str(input("YouTube URL: "))
